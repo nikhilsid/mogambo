@@ -1,8 +1,13 @@
+package com.nilmish.mogambo;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
-import configuration.DbConfiguration;
-import configuration.MogamboConfiguration;
+import com.nilmish.mogambo.configuration.DbConfiguration;
+import com.nilmish.mogambo.configuration.MogamboConfiguration;
+import com.nilmish.mogambo.resources.UserResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -30,7 +35,13 @@ public class App extends Application<MogamboConfiguration>{
 
     @Override
     public void run(MogamboConfiguration mogamboConfiguration, Environment environment) throws Exception {
+        initialiseDB(mogamboConfiguration.getDbConfiguration());
+        Injector injector= Guice.createInjector();
+        registerResources(environment,injector);
+    }
 
+    private void registerResources(Environment environment,Injector injector){
+        environment.jersey().register(injector.getInstance(UserResource.class));
     }
 
     public Mongo initialiseDB(DbConfiguration dbConfig) throws UnknownHostException {

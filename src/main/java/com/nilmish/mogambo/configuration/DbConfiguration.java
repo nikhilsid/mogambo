@@ -1,4 +1,4 @@
-package configuration;
+package com.nilmish.mogambo.configuration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
