@@ -1,18 +1,20 @@
 package com.nilmish.mogambo.configuration;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
 
 /**
  * Created by nilesh.m on 14/06/15.
  */
 public class MogamboConfiguration extends Configuration {
-    private DbConfiguration dbConfiguration;
+    @JsonProperty
+    private DbConfiguration dbConfig;
 
-    public DbConfiguration getDbConfiguration() {
-        return dbConfiguration;
+    public DbConfiguration getDbConfig() {
+        return dbConfig;
     }
 
-    public void setDbConfiguration(DbConfiguration dbConfiguration) {
-        this.dbConfiguration = dbConfiguration;
+    public void setDbConfig(DbConfiguration dbConfig) {
+        this.dbConfig = dbConfig;
     }
 }
