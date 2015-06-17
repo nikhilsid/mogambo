@@ -1,13 +1,13 @@
 package com.nilmish.mogambo.resources;
 
 import com.google.inject.Inject;
+import com.nilmish.mogambo.dao.FollowDAO;
 import com.nilmish.mogambo.dao.UserDAO;
+import com.nilmish.mogambo.dao.UserPostDAO;
 import com.nilmish.mogambo.entities.User;
+import com.nilmish.mogambo.entities.UserPost;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -19,23 +19,52 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class UserResource {
     private UserDAO userDAO;
+    private UserPostDAO userPostDAO;
+    private FollowDAO followDAO;
 
     @Inject
-    public UserResource(UserDAO userDAO) {
+    public UserResource(UserDAO userDAO, UserPostDAO userPostDAO, FollowDAO followDAO) {
         this.userDAO = userDAO;
+        this.userPostDAO = userPostDAO;
+        this.followDAO = followDAO;
     }
 
     @Path("/save")
     @POST
-    public boolean saveUser(){
-        userDAO.save(new User("nilmish","nilesh mishra","nilmish.iit@gmail.com","path",20));
-        userDAO.save(new User("nilmish1","nilesh mishra","nilmish.iit@gmail.com","path",20));
+    public boolean saveUser(User user){
+        userDAO.save(user);
         return true;
     }
 
-    @Path("/get")
+    @Path("/getAllUser")
     @GET
-    public List<User> getUser(){
+    public List<User> getAllUser(){
         return userDAO.findAllUsers();
     }
+
+    @Path("/getUser")
+    @GET
+    public User getUser(@QueryParam("username") String username){
+        return userDAO.get(username);
+    }
+
+    @Path("/savePost")
+    @POST
+    public boolean savePost(){
+        userPostDAO.save(new UserPost());
+        return true;
+    }
+
+//    @Path("/getFeed")
+//    @GET
+//    public List<UserPost> getFeed(@QueryParam("username") String username){
+//
+//    }
+
+    @Path("/getFollowing")
+    @GET
+    public List<String> getFollowing(@QueryParam("username") String username){
+        return followDAO.getFollowingUsernameList(username);
+    }
+
 }

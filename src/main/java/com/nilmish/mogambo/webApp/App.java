@@ -1,10 +1,8 @@
-package com.nilmish.mogambo;
+package com.nilmish.mogambo.webApp;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.nilmish.mogambo.configuration.MogamboConfiguration;
-import com.nilmish.mogambo.dao.UserDAO;
-import com.nilmish.mogambo.entities.User;
 import com.nilmish.mogambo.resources.UserResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;

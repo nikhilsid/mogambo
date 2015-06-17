@@ -1,4 +1,4 @@
-package com.nilmish.mogambo;
+package com.nilmish.mogambo.webApp;
 
 import com.google.inject.AbstractModule;
 import com.mongodb.Mongo;
