@@ -1,6 +1,5 @@
 package com.nilmish.mogambo.entities;
 
-import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
@@ -11,9 +10,8 @@ import org.mongodb.morphia.annotations.Id;
 @Entity(noClassnameStored = true)
 public class Tag {
     @Id
-    private ObjectId tagId;
-    private Integer typeId; // 0(adjective) 1(non-adjective)
     private String tagName;
+    private Integer typeId; // 0(adjective) 1(non-adjective)
     private String tagMeaning;
     private boolean approved;
 
@@ -27,13 +25,6 @@ public class Tag {
     public Tag() {
     }
 
-    public ObjectId getTagId() {
-        return tagId;
-    }
-
-    public void setTagId(ObjectId tagId) {
-        this.tagId = tagId;
-    }
 
     public Integer getTypeId() {
         return typeId;

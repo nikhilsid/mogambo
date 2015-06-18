@@ -1,28 +1,26 @@
 package com.nilmish.mogambo.entities;
 
-import org.bson.types.ObjectId;
-
 /**
  * Created by nilesh.m on 17/06/15.
  */
 public class TagDisagree {
-    private ObjectId tagId;
+    private String tagName;
     private Integer count;
 
     public TagDisagree() {
     }
 
-    public TagDisagree(ObjectId tagId, Integer count) {
-        this.tagId = tagId;
+    public TagDisagree(String tagName, Integer count) {
+        this.tagName = tagName;
         this.count = count;
     }
 
-    public ObjectId getTagId() {
-        return tagId;
+    public String getTagName() {
+        return tagName;
     }
 
-    public void setTagId(ObjectId tagId) {
-        this.tagId = tagId;
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
     }
 
     public Integer getCount() {

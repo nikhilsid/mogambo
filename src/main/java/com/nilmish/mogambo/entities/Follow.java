@@ -11,11 +11,13 @@ public class Follow {
     private ObjectId id;
     private String followerId;
     private String followingId;
+    private Integer tagOrUser; // 0 for tag, 1 for user
     private Long timestamp;
 
-    public Follow(String followerId, String followingId, Long timestamp) {
+    public Follow(String followerId, String followingId, Integer tagOrUser, Long timestamp) {
         this.followerId = followerId;
         this.followingId = followingId;
+        this.tagOrUser = tagOrUser;
         this.timestamp = timestamp;
     }
 
@@ -52,6 +54,14 @@ public class Follow {
 
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public Integer getTagOrUser() {
+        return tagOrUser;
+    }
+
+    public void setTagOrUser(Integer tagOrUser) {
+        this.tagOrUser = tagOrUser;
     }
 }
 

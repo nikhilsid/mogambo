@@ -25,9 +25,6 @@ public class MogamboModule extends AbstractModule {
         Mongo mongo= null;
         try {
             mongo = new MongoClient(new ServerAddress(dbConfig.getHost(),dbConfig.getPort()));
-            System.out.println(dbConfig.getHost());
-            System.out.println(dbConfig.getPort());
-            System.out.println(dbConfig.getDBName());
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

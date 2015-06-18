@@ -13,7 +13,7 @@ import java.util.List;
 public class UserPost {
     @Id
     private ObjectId postId;
-    private String userId;
+    private String username;
     private String parentId;
     private String postLocation;
     private Long timestamp;
@@ -22,13 +22,13 @@ public class UserPost {
     private String postImageURL;
     private String locationGeoCode;
     private Integer aggregatedVoteCount;
-    private List<TagDisagree> tagDisagreeList;
+    private List<TagDisagree> tagList;
 
     public UserPost() {
     }
 
-    public UserPost(String userId, String parentId, String postLocation, Long timestamp, String priceCurrency, String postPrice, String postImageURL, String locationGeoCode, Integer aggregatedVoteCount, List<TagDisagree> tagDisagreeList) {
-        this.userId = userId;
+    public UserPost(String username, String parentId, String postLocation, Long timestamp, String priceCurrency, String postPrice, String postImageURL, String locationGeoCode, Integer aggregatedVoteCount, List<TagDisagree> tagList) {
+        this.username = username;
         this.parentId = parentId;
         this.postLocation = postLocation;
         this.timestamp = timestamp;
@@ -37,7 +37,7 @@ public class UserPost {
         this.postImageURL = postImageURL;
         this.locationGeoCode = locationGeoCode;
         this.aggregatedVoteCount = aggregatedVoteCount;
-        this.tagDisagreeList = tagDisagreeList;
+        this.tagList = tagList;
     }
 
     public ObjectId getPostId() {
@@ -48,12 +48,12 @@ public class UserPost {
         this.postId = postId;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getParentId() {
@@ -120,11 +120,11 @@ public class UserPost {
         this.aggregatedVoteCount = aggregatedVoteCount;
     }
 
-    public List<TagDisagree> getTagDisagreeList() {
-        return tagDisagreeList;
+    public List<TagDisagree> getTagList() {
+        return tagList;
     }
 
-    public void setTagDisagreeList(List<TagDisagree> tagDisagreeList) {
-        this.tagDisagreeList = tagDisagreeList;
+    public void setTagList(List<TagDisagree> tagList) {
+        this.tagList = tagList;
     }
 }
