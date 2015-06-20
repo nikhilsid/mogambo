@@ -6,7 +6,7 @@ import org.mongodb.morphia.annotations.Id;
 /**
  * Created by nilesh.m on 16/06/15.
  */
-public class Follow {
+public class Relationship {
     @Id
     private ObjectId id;
     private String followerId;
@@ -14,14 +14,14 @@ public class Follow {
     private Integer tagOrUser; // 0 for tag, 1 for user
     private Long timestamp;
 
-    public Follow(String followerId, String followingId, Integer tagOrUser, Long timestamp) {
+    public Relationship(String followerId, String followingId, Integer tagOrUser, Long timestamp) {
         this.followerId = followerId;
         this.followingId = followingId;
         this.tagOrUser = tagOrUser;
         this.timestamp = timestamp;
     }
 
-    public Follow() {
+    public Relationship() {
     }
 
     public ObjectId getId() {

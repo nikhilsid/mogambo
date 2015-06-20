@@ -7,7 +7,7 @@ import org.mongodb.morphia.annotations.Id;
  */
 public class Activity {
     @Id
-    private String id;
+    private String id; // username+postId
     private String username;
     private String postId;
     private Long timestamp;

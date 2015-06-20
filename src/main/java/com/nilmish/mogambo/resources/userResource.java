@@ -1,7 +1,7 @@
 package com.nilmish.mogambo.resources;
 
 import com.google.inject.Inject;
-import com.nilmish.mogambo.dao.FollowDAO;
+import com.nilmish.mogambo.dao.RelationshipDAO;
 import com.nilmish.mogambo.dao.TagDAO;
 import com.nilmish.mogambo.dao.UserDAO;
 import com.nilmish.mogambo.dao.UserPostDAO;
@@ -23,23 +23,23 @@ import java.util.List;
 public class UserResource {
     private UserDAO userDAO;
     private UserPostDAO userPostDAO;
-    private FollowDAO followDAO;
+    private RelationshipDAO relationshipDAO;
     private TagDAO tagDAO;
     private FeedGenerator feedGenerator;
 
     @Inject
-    public UserResource(UserDAO userDAO, UserPostDAO userPostDAO, FollowDAO followDAO, TagDAO tagDAO, FeedGenerator feedGenerator) {
+    public UserResource(UserDAO userDAO, UserPostDAO userPostDAO, RelationshipDAO relationshipDAO, TagDAO tagDAO, FeedGenerator feedGenerator) {
         this.userDAO = userDAO;
         this.userPostDAO = userPostDAO;
-        this.followDAO = followDAO;
+        this.relationshipDAO = relationshipDAO;
         this.tagDAO = tagDAO;
         this.feedGenerator = feedGenerator;
     }
 
     @Path("/save")
     @POST
-    public boolean saveUser(User user){
-        userDAO.save(user);
+    public boolean saveUser(){
+        //userDAO.save(new User("nilmish","nilesh mishra","nilmish.iit@gmail.com","",new Double(2),2,3,false));
         return true;
     }
 
@@ -71,15 +71,28 @@ public class UserResource {
     @Path("/getFollowingUser")
     @GET
     public List<String> getFollowingUser(@QueryParam("username") String username){
-        return followDAO.getFollowingUsernameList(username);
+        return relationshipDAO.getFollowingUsernameList(username);
     }
 
 
     @Path("/getFollowingTag")
     @GET
     public List<Tag> getFollowingTags(@QueryParam("username") String username){
-        List<String> tagIdList=followDAO.getFollowingTagId(username);
+        List<String> tagIdList= relationshipDAO.getFollowingTagId(username);
         return tagDAO.getTagsFromIds(tagIdList);
     }
 
+    @Path("/followUser")
+    @GET   // username1 follows username2
+    public boolean followUser(@QueryParam("username1") String username1, @QueryParam("username2") String username2){
+
+        return true;
+    }
+
+    @Path("/unfollowUser")
+    @GET  // username1 unfollows username2
+    public boolean unfollowUser(@QueryParam("username1") String username1, @QueryParam("username2") String username2){
+
+        return true;
+    }
 }
