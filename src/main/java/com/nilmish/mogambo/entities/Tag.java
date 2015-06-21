@@ -33,47 +33,23 @@ public class Tag {
         return tagId;
     }
 
-    public void setTagId(ObjectId tagId) {
-        this.tagId = tagId;
-    }
-
-    public String getRequestCount() {
-        return requestCount;
-    }
-
-    public void setRequestCount(String requestCount) {
-        this.requestCount = requestCount;
+    public String getTagName() {
+        return tagName;
     }
 
     public Integer getTypeId() {
         return typeId;
     }
 
-    public void setTypeId(Integer typeId) {
-        this.typeId = typeId;
-    }
-
-    public String getTagName() {
-        return tagName;
-    }
-
-    public void setTagName(String tagName) {
-        this.tagName = tagName;
-    }
-
     public String getTagMeaning() {
         return tagMeaning;
     }
 
-    public void setTagMeaning(String tagMeaning) {
-        this.tagMeaning = tagMeaning;
+    public String getRequestCount() {
+        return requestCount;
     }
 
     public boolean isApproved() {
         return approved;
-    }
-
-    public void setApproved(boolean approved) {
-        this.approved = approved;
     }
 }

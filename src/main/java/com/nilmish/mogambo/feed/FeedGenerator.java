@@ -31,15 +31,10 @@ public class FeedGenerator {
     }
 
     public  List<UserPost> generateFeed(String username){
-        Following following=followingDAO.get(username);
-        List<ObjectId> followingTagId=following.getFollowingTagList();
-        List<String> followingUsernameList=following.getFollowingUserList();
-        HashSet<ObjectId> userFeedList=userPostDAO.findUserFeed(followingUsernameList);
-        for(ObjectId id:followingTagId){
-            add(userFeedList, inverseTagPostMapperDAO.get(id).getPostIdList());
-        }
-        List<UserPost> userPostList=userPostDAO.getPostFromIds(userFeedList);
-        return userPostList;
+        Following following=followingDAO.getFollowingObjectId(username);
+        List<ObjectId> followingUserIdList=following.getFollowingUserIdList();
+        HashSet<ObjectId> userPostIdList=userPostDAO.findUserFeed(followingUserIdList);
+        return userPostDAO.getPostFromIds(userPostIdList);
     }
 
     private void add(HashSet<ObjectId> userFeedList, List<ObjectId> postIdList) {

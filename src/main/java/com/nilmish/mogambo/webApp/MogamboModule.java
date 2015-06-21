@@ -4,10 +4,11 @@ import com.google.inject.AbstractModule;
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
+import com.nilmish.mogambo.auth.AccessTokenService;
+import com.nilmish.mogambo.auth.RedisAccessTokenService;
 import com.nilmish.mogambo.configuration.DbConfiguration;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
-
 import java.net.UnknownHostException;
 
 /**
@@ -31,5 +32,6 @@ public class MogamboModule extends AbstractModule {
         Morphia morphia = new Morphia();
         Datastore ds = morphia.createDatastore((MongoClient) mongo, dbConfig.getDBName());
         bind(Datastore.class).toInstance(ds);
+        bind(AccessTokenService.class).to(RedisAccessTokenService.class);
     }
 }

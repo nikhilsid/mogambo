@@ -21,7 +21,12 @@ public class TagDAO extends BasicDAO<Tag,ObjectId> {
         super(ds);
     }
 
-    public List<Tag> getTagsFromIds(List<String> tagIdList) {
+    public Tag getTagObFromTagName(String tagName){
+        Query<Tag> query=this.getDatastore().createQuery(Tag.class).field("tagName").equal(tagName);
+        return this.findOne(query);
+    }
+
+    public List<Tag> getTagsFromIds(List<ObjectId> tagIdList) {
         Query<Tag> query=this.getDatastore().createQuery(Tag.class).field("tagId").in(tagIdList);
         return this.find(query).asList();
     }

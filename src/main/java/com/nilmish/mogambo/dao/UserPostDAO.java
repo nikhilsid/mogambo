@@ -27,7 +27,7 @@ public class UserPostDAO extends BasicDAO<UserPost,ObjectId> {
         super(ds);
     }
 
-    public HashSet<ObjectId> findUserFeed(List<String> userFollowingIds) {
+    public HashSet<ObjectId> findUserFeed(List<ObjectId> userFollowingIds) {
         HashSet<ObjectId> hashSet=new HashSet<ObjectId>();
         if(userFollowingIds.size()==0){
             return hashSet;

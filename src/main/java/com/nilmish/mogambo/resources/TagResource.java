@@ -30,11 +30,11 @@ public class TagResource {
         return true;
     }
 
-    @Path("/getTagsFollowed")
-    @GET
-    public List<Tag> getTagsFollowed(@QueryParam("username") String username){
-
-    }
+//    @Path("/getTagsFollowed")
+//    @GET
+//    public List<Tag> getTagsFollowed(@QueryParam("username") String username){
+//        List<>
+//    }
 
 
 }

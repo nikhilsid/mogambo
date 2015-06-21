@@ -1,5 +1,6 @@
 package com.nilmish.mogambo.entities;
 
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
@@ -10,6 +11,7 @@ import org.mongodb.morphia.annotations.Id;
 @Entity(noClassnameStored = true)
 public class User {
     @Id
+    private ObjectId id;
     private String username;
     private String name;
     private String emailId;
@@ -19,9 +21,9 @@ public class User {
     private Integer followingCount;
     private Integer tagFollowCount;
     private Integer postCount;
-    private boolean isUserVerified;
+    private boolean userVerified;
 
-    public User(String username, String name, String emailId, String userPhotoPath, Double userScore, Integer followersCount, Integer followingCount, Integer tagFollowCount, Integer postCount, boolean isUserVerified) {
+    public User(String username, String name, String emailId, String userPhotoPath, Double userScore, Integer followersCount, Integer followingCount, Integer tagFollowCount, Integer postCount, boolean UserVerified) {
         this.username = username;
         this.name = name;
         this.emailId = emailId;
@@ -31,89 +33,53 @@ public class User {
         this.followingCount = followingCount;
         this.tagFollowCount = tagFollowCount;
         this.postCount = postCount;
-        this.isUserVerified = isUserVerified;
+        this.userVerified = UserVerified;
     }
 
     public User() {
-    }
-
-    public Integer getFollowingCount() {
-        return followingCount;
-    }
-
-    public void setFollowingCount(Integer followingCount) {
-        this.followingCount = followingCount;
-    }
-
-    public Integer getTagFollowCount() {
-        return tagFollowCount;
-    }
-
-    public void setTagFollowCount(Integer tagFollowCount) {
-        this.tagFollowCount = tagFollowCount;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public ObjectId getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getEmailId() {
         return emailId;
-    }
-
-    public void setEmailId(String emailId) {
-        this.emailId = emailId;
     }
 
     public String getUserPhotoPath() {
         return userPhotoPath;
     }
 
-    public void setUserPhotoPath(String userPhotoPath) {
-        this.userPhotoPath = userPhotoPath;
-    }
-
     public Double getUserScore() {
         return userScore;
-    }
-
-    public void setUserScore(Double userScore) {
-        this.userScore = userScore;
     }
 
     public Integer getFollowersCount() {
         return followersCount;
     }
 
-    public void setFollowersCount(Integer followersCount) {
-        this.followersCount = followersCount;
+    public Integer getFollowingCount() {
+        return followingCount;
+    }
+
+    public Integer getTagFollowCount() {
+        return tagFollowCount;
     }
 
     public Integer getPostCount() {
         return postCount;
     }
 
-    public void setPostCount(Integer postCount) {
-        this.postCount = postCount;
-    }
-
     public boolean isUserVerified() {
-        return isUserVerified;
-    }
-
-    public void setUserVerified(boolean isUserVerified) {
-        this.isUserVerified = isUserVerified;
+        return userVerified;
     }
 }

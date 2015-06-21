@@ -16,20 +16,4 @@ public class TagDisagree {
         this.tagId = tagId;
         this.count = count;
     }
-
-    public ObjectId getTagId() {
-        return tagId;
-    }
-
-    public void setTagId(ObjectId tagId) {
-        this.tagId = tagId;
-    }
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
-    }
 }

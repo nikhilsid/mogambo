@@ -24,19 +24,7 @@ public class InverseTagPostMapper {
     public InverseTagPostMapper() {
     }
 
-    public ObjectId getTagId() {
-        return tagId;
-    }
-
-    public void setTagId(ObjectId tagId) {
-        this.tagId = tagId;
-    }
-
     public List<ObjectId> getPostIdList() {
         return postIdList;
-    }
-
-    public void setPostIdList(List<ObjectId> postIdList) {
-        this.postIdList = postIdList;
     }
 }

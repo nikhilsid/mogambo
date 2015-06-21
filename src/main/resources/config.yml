@@ -4,10 +4,11 @@
 #  connector:
 #    type: http
 #    port: 8080
+#ec2-52-74-121-28.ap-southeast-1.compute.amazonaws.com
 dbConfig:
   dbName : mogambo
   port : 27017
-  host : ec2-52-74-121-28.ap-southeast-1.compute.amazonaws.com
+  host : localhost
 
 server:
 #  softNofileLimit: 1000

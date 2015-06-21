@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.nilmish.mogambo.entities.Relationship;
 import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;
 import org.mongodb.morphia.query.Query;
@@ -22,23 +23,25 @@ public class RelationshipDAO extends BasicDAO<Relationship,ObjectId> {
         super(ds);
     }
 
-    public List<String> getFollowingUsernameList(String username) {
-        Query<Relationship> query=this.getDatastore().createQuery(Relationship.class).field("tagOrUser").equal(1).field("followerId").equal(username);
-        List<Relationship> followingList=this.find(query).asList();
-        List<String> usernameList=new ArrayList<String>();
-        for(Relationship relationship :followingList){
-            usernameList.add(relationship.getFollowingId());
+
+    public void followUser(ObjectId followerId, ObjectId followingId) {
+        Query<Relationship> query=this.getDatastore().createQuery(Relationship.class).field("followerId").equal(followerId).field("followingId").equal(followingId);
+        if(this.findOne(query)==null) {
+            this.save(new Relationship(followerId, followingId, 1, DateTime.now().getMillis()));
         }
-        return usernameList;
     }
 
-    public List<String> getFollowingTagId(String username) {
-        Query<Relationship> query=this.getDatastore().createQuery(Relationship.class).field("tagOrUser").equal(1).field("followerId").equal(username);
-        List<Relationship> followingTagList=this.find(query).asList();
-        List<String> tagIdList=new ArrayList<String>();
-        for(Relationship relationship :followingTagList){
-            tagIdList.add(relationship.getFollowingId());
-        }
-        return tagIdList;
+    public void unfollowUser(ObjectId username1, ObjectId username2) {
+        Query<Relationship> query=this.getDatastore().createQuery(Relationship.class).field("followerId").equal(username1).field("followingId").equal(username2);
+        Relationship relationship = this.findOne(query);
+        this.delete(relationship);
+    }
+
+    public void followTag(ObjectId followerId, ObjectId followingTagId) {
+
+    }
+
+    public void unfollowTag(ObjectId followerId, ObjectId unfollowingTagId) {
+
     }
 }

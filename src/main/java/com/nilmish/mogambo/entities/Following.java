@@ -10,40 +10,37 @@ import java.util.List;
  */
 public class Following {
     @Id
+    private ObjectId id;
     private String username;
-    private List<String> followingUserList;
-    List<ObjectId> followingTagList;
+    private List<ObjectId> followingUserIdList;
+    private List<ObjectId> followingTagIdList;
 
-    public Following(String username, List<String> followingUserList, List<ObjectId> followingTagList) {
-        this.username = username;
-        this.followingUserList = followingUserList;
-        this.followingTagList = followingTagList;
+    public List<ObjectId> getFollowingUserIdList() {
+        return followingUserIdList;
     }
 
-    public Following() {
+    public List<ObjectId> getFollowingTagIdList() {
+        return followingTagIdList;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
+    public Following(String username, List<ObjectId> followingUserIdList, List<ObjectId> followingTagIdList) {
         this.username = username;
+        this.followingUserIdList = followingUserIdList;
+        this.followingTagIdList = followingTagIdList;
     }
 
-    public List<String> getFollowingUserList() {
-        return followingUserList;
+    public Following() {
     }
 
-    public void setFollowingUserList(List<String> followingUserList) {
-        this.followingUserList = followingUserList;
+    public void setFollowingUserIdList(List<ObjectId> followingUserIdList) {
+        this.followingUserIdList = followingUserIdList;
     }
 
-    public List<ObjectId> getFollowingTagList() {
-        return followingTagList;
-    }
-
-    public void setFollowingTagList(List<ObjectId> followingTagList) {
-        this.followingTagList = followingTagList;
+    public void setFollowingTagIdList(List<ObjectId> followingTagIdList) {
+        this.followingTagIdList = followingTagIdList;
     }
 }
