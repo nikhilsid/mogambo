@@ -1,13 +1,14 @@
 package com.nilmish.mogambo.resources;
 
 import com.google.inject.Inject;
+import com.nilmish.mogambo.auth.UserSession;
 import com.nilmish.mogambo.dao.TagDAO;
 import com.nilmish.mogambo.entities.Tag;
+import io.dropwizard.auth.Auth;
+import org.bson.types.ObjectId;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
@@ -15,6 +16,7 @@ import java.util.List;
  */
 
 @Path("/tag")
+@Produces(MediaType.APPLICATION_JSON)
 public class TagResource {
     private TagDAO tagDAO;
 
@@ -25,16 +27,17 @@ public class TagResource {
 
     @Path("/save")
     @POST
-    public boolean saveTag(Tag tag){
+    public boolean saveTag(@Auth UserSession userSession, Tag tag){
         tagDAO.save(tag);
         return true;
     }
 
-//    @Path("/getTagsFollowed")
-//    @GET
-//    public List<Tag> getTagsFollowed(@QueryParam("username") String username){
-//        List<>
-//    }
+    @Path("/getAllTags")
+    @GET
+    public List<Tag> getTagsFollowed(@Auth UserSession userSession){
+        List<ObjectId> objectIdList=tagDAO.findIds();
+        return tagDAO.getTagsFromIds(objectIdList);
+    }
 
 
 }

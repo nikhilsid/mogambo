@@ -15,10 +15,10 @@ public class Tag {
     private String tagName;
     private Integer typeId; // 0(adjective) 1(non-adjective)
     private String tagMeaning;
-    private String requestCount;
+    private Integer requestCount;
     private boolean approved;
 
-    public Tag(String tagName, Integer typeId, String tagMeaning, String requestCount, boolean approved) {
+    public Tag(String tagName, Integer typeId, String tagMeaning, Integer requestCount, boolean approved) {
         this.tagName = tagName;
         this.typeId = typeId;
         this.tagMeaning = tagMeaning;
@@ -45,7 +45,7 @@ public class Tag {
         return tagMeaning;
     }
 
-    public String getRequestCount() {
+    public Integer getRequestCount() {
         return requestCount;
     }
 

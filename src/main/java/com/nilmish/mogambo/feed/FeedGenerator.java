@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.nilmish.mogambo.dao.*;
 import com.nilmish.mogambo.entities.Following;
-import com.nilmish.mogambo.entities.User;
 import com.nilmish.mogambo.entities.UserPost;
 import org.bson.types.ObjectId;
 
@@ -31,10 +30,20 @@ public class FeedGenerator {
     }
 
     public  List<UserPost> generateFeed(String username){
-        Following following=followingDAO.getFollowingObjectId(username);
+        Following following=followingDAO.getFollowingObject(username);
         List<ObjectId> followingUserIdList=following.getFollowingUserIdList();
-        HashSet<ObjectId> userPostIdList=userPostDAO.findUserFeed(followingUserIdList);
-        return userPostDAO.getPostFromIds(userPostIdList);
+        List<ObjectId> followingTagIdList=following.getFollowingTagIdList();
+
+        // from following people
+        HashSet<ObjectId> userFeedIdSet=userPostDAO.findUserFeed(followingUserIdList);
+
+        // from following tag
+        for(ObjectId tagId:followingTagIdList){
+            List<ObjectId> postIdList=inverseTagPostMapperDAO.get(tagId).getPostIdList();
+            add(userFeedIdSet,postIdList);
+        }
+
+        return userPostDAO.getPostFromIds(userFeedIdSet);
     }
 
     private void add(HashSet<ObjectId> userFeedList, List<ObjectId> postIdList) {

@@ -2,6 +2,7 @@ package com.nilmish.mogambo.auth;
 
 
 import com.google.common.base.Optional;
+import com.google.inject.Inject;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 
@@ -11,6 +12,7 @@ import io.dropwizard.auth.Authenticator;
 public class AccessTokenAuthenticator implements Authenticator<AccessTokenCredentials,UserSession> {
     private AccessTokenService accessTokenService;
 
+    @Inject
     public AccessTokenAuthenticator(AccessTokenService accessTokenService) {
         this.accessTokenService = accessTokenService;
     }

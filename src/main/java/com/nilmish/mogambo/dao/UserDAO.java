@@ -38,16 +38,18 @@ public class UserDAO extends BasicDAO<User,ObjectId> {
         return user;
     }
 
-    public List<String> getUsernameFromUserId(List<ObjectId> followingUserIdList) {
-        List<String> usernameList=new ArrayList<String>();
+    public List<User> getUserObjectFromUserIdList(List<ObjectId> followingUserIdList) {
+        List<User> usernameList=new ArrayList<User>();
         if(followingUserIdList==null || followingUserIdList.size()==0){
             return usernameList;
         }
         Query<User> query=this.getDatastore().createQuery(User.class).field("id").in(followingUserIdList);
         List<User> userList=this.find(query).asList();
-        for(User user:userList){
-            usernameList.add(user.getUsername());
-        }
-        return usernameList;
+        return userList;
+    }
+
+    public User getUserObjectFromUserId(String username) {
+        Query<User> query=this.getDatastore().createQuery(User.class).field("username").equal(username);
+        return this.findOne(query);
     }
 }

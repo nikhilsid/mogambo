@@ -3,6 +3,8 @@ package com.nilmish.mogambo.resources;
 import com.google.inject.Inject;
 import com.nilmish.mogambo.auth.UserSession;
 import com.nilmish.mogambo.dao.*;
+import com.nilmish.mogambo.entities.Following;
+import com.nilmish.mogambo.entities.Tag;
 import com.nilmish.mogambo.entities.User;
 import com.nilmish.mogambo.entities.UserPost;
 import com.nilmish.mogambo.feed.FeedGenerator;
@@ -11,6 +13,7 @@ import org.bson.types.ObjectId;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,7 +40,15 @@ public class UserResource {
         this.feedGenerator = feedGenerator;
     }
 
-    @Path("/save")
+//    @Path("/savePost")
+//    @POST
+//    public boolean savePost(@Auth UserSession userSession){
+//        UserPost userPost=new UserPost("nilmish","");
+//        userPostDAO.save(userPost);
+//        return true;
+//    }
+
+    @Path("/saveUser")
     @POST
     public boolean saveUser(@Auth UserSession userSession,User user){
         userDAO.save(user);
@@ -57,13 +68,6 @@ public class UserResource {
         return userDAO.findUser(username);
     }
 
-    @Path("/savePost")
-    @POST
-    public boolean savePost(@Auth UserSession userSession, UserPost userPost){
-        userPostDAO.save(userPost);
-        return true;
-    }
-
     @Path("/getFeed")
     @GET
     public List<UserPost> getFeed(@Auth UserSession userSession){
@@ -75,18 +79,23 @@ public class UserResource {
     @GET
     public List<String> getFollowingUser(@Auth UserSession userSession){
         String username=userSession.getUsername();
-        List<ObjectId> followingUserIdList=followingDAO.getFollowingObjectId(username).getFollowingUserIdList();
-        return userDAO.getUsernameFromUserId(followingUserIdList);
+        List<ObjectId> followingUserIdList=followingDAO.getFollowingObject(username).getFollowingUserIdList();
+        List<User> userList=userDAO.getUserObjectFromUserIdList(followingUserIdList);
+        List<String> usernameList=new ArrayList<String>();
+        for(User user:userList){
+            usernameList.add(user.getUsername());
+        }
+        return usernameList;
     }
 
 
-//    @Path("/getFollowingTag")
-//    @GET
-//    public List<Tag> getFollowingTags(@Auth UserSession userSession){
-//        String username=userSession.getUsername();
-//        List<ObjectId> tagIdList= relationshipDAO.getFollowingTagId(username);
-//        return tagDAO.getTagsFromIds(tagIdList);
-//    }
+    @Path("/getFollowingTag")
+    @GET
+    public List<Tag> getFollowingTags(@Auth UserSession userSession){
+        String username=userSession.getUsername();
+        List<ObjectId> tagIdList= followingDAO.getFollowingObject(username).getFollowingTagIdList();
+        return tagDAO.getTagsFromIds(tagIdList);
+    }
 
     @Path("/followUser")
     @GET   // username follows followUsername
@@ -94,7 +103,7 @@ public class UserResource {
         String username=userSession.getUsername();
         ObjectId followerId=userDAO.findUser(username).getId();
         ObjectId followingId=userDAO.findUser(followUsername).getId();
-        relationshipDAO.followUser(followerId, followingId);
+        relationshipDAO.follow(followerId, followingId, 1);
         followingDAO.addUserFollower(username, followingId);
         return true;
     }
@@ -105,7 +114,7 @@ public class UserResource {
         String username=userSession.getUsername();
         ObjectId followerId=userDAO.findUser(username).getId();
         ObjectId unfollowingId=userDAO.findUser(unfollowUsername).getId();
-        relationshipDAO.unfollowUser(followerId, unfollowingId);
+        relationshipDAO.unfollow(followerId, unfollowingId);
         followingDAO.removeUserFollower(username, unfollowingId);
         return true;
     }
@@ -116,7 +125,7 @@ public class UserResource {
         String username=userSession.getUsername();
         ObjectId followerId=userDAO.findUser(username).getId();
         ObjectId followingTagId=tagDAO.getTagObFromTagName(followTag).getTagId();
-        relationshipDAO.followTag(followerId, followingTagId);
+        relationshipDAO.follow(followerId, followingTagId, 0);
         followingDAO.addTagFollower(username, followingTagId);
         return true;
     }
@@ -127,8 +136,15 @@ public class UserResource {
         String username=userSession.getUsername();
         ObjectId followerId=userDAO.findUser(username).getId();
         ObjectId unfollowingTagId=tagDAO.getTagObFromTagName(unfollowTag).getTagId();
-        relationshipDAO.unfollowTag(followerId, unfollowingTagId);
+        relationshipDAO.unfollow(followerId, unfollowingTagId);
         followingDAO.removeTagFollower(username, unfollowingTagId);
         return true;
+    }
+
+    @Path("/getTagsFollowed")
+    @GET
+    public List<Tag> getTagsFollowed(@Auth UserSession userSession){
+        Following following=followingDAO.getFollowingObject(userSession.getUsername());
+        return tagDAO.getTagsFromIds(following.getFollowingTagIdList());
     }
 }

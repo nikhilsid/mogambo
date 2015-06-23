@@ -8,7 +8,6 @@ import org.mongodb.morphia.dao.BasicDAO;
 import org.mongodb.morphia.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,14 +21,13 @@ public class FollowingDAO extends BasicDAO<Following,ObjectId> {
         super(ds);
     }
 
-    public Following getFollowingObjectId(String username) {
+    public Following getFollowingObject(String username) {
         Query<Following> query=this.getDatastore().createQuery(Following.class).field("username").equal(username);
         return this.findOne(query);
     }
 
     public void addUserFollower(String username, ObjectId followingId) {
-        Query<Following> query=this.getDatastore().createQuery(Following.class).field("username").equal(username);
-        Following following=this.findOne(query);
+        Following following=getFollowingObject(username);
         if(following==null){
             List<ObjectId> followingIdList=new ArrayList<ObjectId>();
             followingIdList.add(followingId);
@@ -46,8 +44,7 @@ public class FollowingDAO extends BasicDAO<Following,ObjectId> {
     }
 
     public void removeUserFollower(String username, ObjectId unfollowingId) {
-        Query<Following> query=this.getDatastore().createQuery(Following.class).field("username").equal(username);
-        Following following=this.findOne(query);
+        Following following=getFollowingObject(username);
         if(following.getFollowingUserIdList()!=null) {
             logger.info("user with objectId: "+unfollowingId+" is removed from user: "+username+" following list");
             following.getFollowingUserIdList().remove(unfollowingId);
@@ -59,10 +56,32 @@ public class FollowingDAO extends BasicDAO<Following,ObjectId> {
     }
 
     public void addTagFollower(String username, ObjectId followingTagId) {
-
+        Following following=getFollowingObject(username);
+        if(following==null){
+            List<ObjectId> followingIdList=null;
+            List<ObjectId> followingTagList=new ArrayList<ObjectId>();
+            followingTagList.add(followingTagId);
+            following=new Following(username,followingIdList,followingTagList);
+        }
+        else{
+            if(following.getFollowingTagIdList()==null) {
+                following.setFollowingTagIdList(new ArrayList<ObjectId>());
+            }
+            following.getFollowingTagIdList().add(followingTagId);
+        }
+        this.save(following);
     }
 
     public void removeTagFollower(String username, ObjectId unfollowingTagId) {
-
+        Following following=getFollowingObject(username);
+        if(following.getFollowingTagIdList()!=null) {
+            logger.info("user with objectId: "+unfollowingTagId+" is removed from user: "+username+" following list");
+            following.getFollowingTagIdList().remove(unfollowingTagId);
+            this.save(following);
+        }
+        else{
+            logger.info("user with objectId: "+unfollowingTagId+" not found in the user: "+username+" following list");
+        }
     }
+
 }

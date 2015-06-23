@@ -13,8 +13,8 @@ import java.util.List;
 public class UserPost {
     @Id
     private ObjectId postId;
-    private String username;
-    private String parentId;
+    private ObjectId userId;
+    private ObjectId parentId;
     private String postLocation;
     private Long timestamp;
     private String priceCurrency;
@@ -27,8 +27,8 @@ public class UserPost {
     public UserPost() {
     }
 
-    public UserPost(String username, String parentId, String postLocation, Long timestamp, String priceCurrency, String postPrice, String postImageURL, String locationGeoCode, Integer aggregatedVoteCount, List<TagDisagree> tagList) {
-        this.username = username;
+    public UserPost(ObjectId userId, ObjectId parentId, String postLocation, Long timestamp, String priceCurrency, String postPrice, String postImageURL, String locationGeoCode, Integer aggregatedVoteCount, List<TagDisagree> tagList) {
+        this.userId = userId;
         this.parentId = parentId;
         this.postLocation = postLocation;
         this.timestamp = timestamp;
@@ -42,5 +42,49 @@ public class UserPost {
 
     public ObjectId getPostId() {
         return postId;
+    }
+
+    public void setAggregatedVoteCount(Integer aggregatedVoteCount) {
+        this.aggregatedVoteCount = aggregatedVoteCount;
+    }
+
+    public ObjectId getUserId() {
+        return userId;
+    }
+
+    public ObjectId getParentId() {
+        return parentId;
+    }
+
+    public String getPostLocation() {
+        return postLocation;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public String getPriceCurrency() {
+        return priceCurrency;
+    }
+
+    public String getPostPrice() {
+        return postPrice;
+    }
+
+    public String getPostImageURL() {
+        return postImageURL;
+    }
+
+    public String getLocationGeoCode() {
+        return locationGeoCode;
+    }
+
+    public Integer getAggregatedVoteCount() {
+        return aggregatedVoteCount;
+    }
+
+    public List<TagDisagree> getTagList() {
+        return tagList;
     }
 }

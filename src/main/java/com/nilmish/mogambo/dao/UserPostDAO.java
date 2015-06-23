@@ -64,8 +64,15 @@ public class UserPostDAO extends BasicDAO<UserPost,ObjectId> {
     public List<UserPost> getPostFromIds(HashSet<ObjectId> userFeedList) {
         List<UserPost> userPostList=new ArrayList<UserPost>();
         if(userFeedList.size()!=0) {
-            Query<UserPost> query = this.getDatastore().createQuery(UserPost.class).field("").in(userFeedList);
+            Query<UserPost> query = this.getDatastore().createQuery(UserPost.class).field("postId").in(userFeedList);
+            userPostList=this.find(query).asList();
         }
         return userPostList;
+    }
+
+    public void upvotePost(ObjectId objectId) {
+        UserPost userPost=this.get(objectId);
+        userPost.setAggregatedVoteCount(userPost.getAggregatedVoteCount()+1);
+        this.save(userPost);
     }
 }

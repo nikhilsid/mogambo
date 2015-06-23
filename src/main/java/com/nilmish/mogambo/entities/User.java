@@ -82,4 +82,8 @@ public class User {
     public boolean isUserVerified() {
         return userVerified;
     }
+
+    public void setPostCount(Integer postCount) {
+        this.postCount = postCount;
+    }
 }

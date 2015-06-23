@@ -9,6 +9,9 @@ import com.nilmish.mogambo.auth.RedisAccessTokenService;
 import com.nilmish.mogambo.configuration.DbConfiguration;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+
 import java.net.UnknownHostException;
 
 /**
@@ -31,7 +34,9 @@ public class MogamboModule extends AbstractModule {
         }
         Morphia morphia = new Morphia();
         Datastore ds = morphia.createDatastore((MongoClient) mongo, dbConfig.getDBName());
+        JedisPool jedisPool = new JedisPool(new JedisPoolConfig(), "localhost");
         bind(Datastore.class).toInstance(ds);
+        bind(JedisPool.class).toInstance(jedisPool);
         bind(AccessTokenService.class).to(RedisAccessTokenService.class);
     }
 }
