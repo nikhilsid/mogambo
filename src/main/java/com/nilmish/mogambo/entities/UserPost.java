@@ -23,6 +23,7 @@ public class UserPost {
     private String locationGeoCode;
     private Integer aggregatedVoteCount;
     private List<TagDisagree> tagList;
+    // add retweet count
 
     public UserPost() {
     }

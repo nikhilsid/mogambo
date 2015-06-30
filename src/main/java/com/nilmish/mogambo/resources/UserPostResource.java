@@ -6,6 +6,7 @@ import com.nilmish.mogambo.dao.UserDAO;
 import com.nilmish.mogambo.dao.UserPostDAO;
 import com.nilmish.mogambo.entities.User;
 import com.nilmish.mogambo.entities.UserPost;
+import com.nilmish.mogambo.utils.GuiceInjector;
 import io.dropwizard.auth.Auth;
 import org.bson.types.ObjectId;
 
@@ -21,13 +22,12 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON)
 public class UserPostResource {
 
-    private UserPostDAO userPostDAO;
-    private UserDAO userDAO;
+    @Inject private UserPostDAO userPostDAO;
+    @Inject private UserDAO userDAO;
 
     @Inject
     public UserPostResource(UserPostDAO userPostDAO, UserDAO userDAO) {
-        this.userPostDAO = userPostDAO;
-        this.userDAO = userDAO;
+        GuiceInjector.getInjector().injectMembers(this);
     }
 
     @POST
@@ -43,6 +43,13 @@ public class UserPostResource {
     @Path("/upvote")
     public boolean upvotePost(@Auth UserSession userSession, ObjectId objectId){
         userPostDAO.upvotePost(objectId);
+        return true;
+    }
+
+    @POST
+    @Path("/unUpvote")
+    public boolean unUpvotePost(@Auth UserSession userSession, ObjectId objectId){
+        userPostDAO.unUpvotePost(objectId);
         return true;
     }
 }

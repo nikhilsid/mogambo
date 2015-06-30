@@ -16,7 +16,7 @@ import java.util.List;
  */
 
 @Singleton
-public class UserDAO extends BasicDAO<User,ObjectId> {
+public class UserDAO extends BasicDAO<User,String> {
     @Inject
     public UserDAO(Datastore ds) {
         super(ds);
@@ -24,8 +24,8 @@ public class UserDAO extends BasicDAO<User,ObjectId> {
 
     public List<User> findAllUsers() {
         List<User> userList= new ArrayList<User>();
-        List<ObjectId> usernameList=this.findIds();
-        for(ObjectId id:usernameList){
+        List<String> usernameList=this.findIds();
+        for(String id:usernameList){
             userList.add(this.get(id));
         }
         return userList;
@@ -38,7 +38,7 @@ public class UserDAO extends BasicDAO<User,ObjectId> {
         return user;
     }
 
-    public List<User> getUserObjectFromUserIdList(List<ObjectId> followingUserIdList) {
+    public List<User> getUserObjectFromUserIdList(List<String> followingUserIdList) {
         List<User> usernameList=new ArrayList<User>();
         if(followingUserIdList==null || followingUserIdList.size()==0){
             return usernameList;

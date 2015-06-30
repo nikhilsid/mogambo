@@ -13,10 +13,10 @@ import java.util.List;
 @Entity(noClassnameStored = true)
 public class InverseTagPostMapper {
     @Id
-    private ObjectId tagId;
-    private List<ObjectId> postIdList;
+    private String tagId;
+    private List<String> postIdList;
 
-    public InverseTagPostMapper(ObjectId tagId, List<ObjectId> postIdList) {
+    public InverseTagPostMapper(String tagId, List<String> postIdList) {
         this.tagId = tagId;
         this.postIdList = postIdList;
     }
@@ -24,7 +24,7 @@ public class InverseTagPostMapper {
     public InverseTagPostMapper() {
     }
 
-    public List<ObjectId> getPostIdList() {
+    public List<String> getPostIdList() {
         return postIdList;
     }
 }

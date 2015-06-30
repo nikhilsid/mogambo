@@ -3,10 +3,13 @@ package com.nilmish.mogambo.auth;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import io.dropwizard.lifecycle.Managed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -14,16 +17,14 @@ import java.util.UUID;
 /**
  * Created by nilesh.m on 12/05/15.
  */
+
+@Singleton
 public class RedisAccessTokenService implements AccessTokenService {
 
     private JedisPool jedisPool;
     private ObjectMapper objectMapper=new ObjectMapper();
-    public static final Logger LOG = LoggerFactory.getLogger(RedisAccessTokenService.class);
+    public static final Logger logger = LoggerFactory.getLogger(RedisAccessTokenService.class);
 
-    @Inject
-    public RedisAccessTokenService(JedisPool jedisPool) {
-        this.jedisPool = jedisPool;
-    }
 
     public UserSession createAccessToken(UserSession userSession) {
         String userName=userSession.getUsername();
@@ -32,12 +33,12 @@ public class RedisAccessTokenService implements AccessTokenService {
             String userNameKey = getUserNameKey(userName);
             String accessToken;
             if (jedis.exists(userNameKey)) {
-                LOG.info("Found an existing auth token for userName: "+userName+". Reusing it.");
+                logger.info("Found an existing auth token for userName: " + userName + ". Reusing it.");
                 accessToken = jedis.get(userNameKey);
                 storeAgentSession(userSession);
                 userSession.setAccessToken(accessToken);
             } else {
-                LOG.info("Creating a new auth token for userName: "+userName);
+                logger.info("Creating a new auth token for userName: " + userName);
                 String newAccessToken = UUID.randomUUID().toString();
                 jedis.set(userNameKey, newAccessToken);
                 jedis.set(getAccessTokenKey(newAccessToken), userName);
@@ -128,7 +129,7 @@ public class RedisAccessTokenService implements AccessTokenService {
     public void removeAccessToken(String accessToken) {
         String userName=getUserNameFromAccessToken(accessToken);
         if(userName==null){
-            LOG.error("Username not found for accessToken "+accessToken);
+            logger.error("Username not found for accessToken " + accessToken);
             return;
         }
         Jedis jedis = jedisPool.getResource();
@@ -136,7 +137,7 @@ public class RedisAccessTokenService implements AccessTokenService {
             jedis.del(getUserNameKey(userName));
             jedis.del(getAccessTokenKey(accessToken));
             jedis.del(getAgentSessionKey(userName));
-            LOG.info("Removed access token: "+accessToken + "for the user with username : "+userName);
+            logger.info("Removed access token: " + accessToken + "for the user with username : " + userName);
         } finally {
             jedis.close();
         }
@@ -153,10 +154,22 @@ public class RedisAccessTokenService implements AccessTokenService {
                 jedis.del(getAgentSessionKey(userName));
             }
             else{
-                LOG.error("Username not found: ",userName);
+                logger.error("Username not found: ", userName);
             }
         } finally {
             jedis.close();
         }
+    }
+
+    @Override
+    public void start() throws Exception {
+        logger.info("starting the jedis pool");
+        jedisPool = new JedisPool(new JedisPoolConfig(), "localhost");
+    }
+
+    @Override
+    public void stop() throws Exception {
+        logger.info("stoping the jedis pool");
+        jedisPool.close();
     }
 }

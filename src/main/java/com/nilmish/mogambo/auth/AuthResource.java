@@ -1,6 +1,7 @@
 package com.nilmish.mogambo.auth;
 
 import com.google.inject.Inject;
+import com.nilmish.mogambo.utils.GuiceInjector;
 import io.dropwizard.auth.Auth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +21,13 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class AuthResource {
-    private AccessTokenService accessTokenService;
+
+    @Inject private AccessTokenService accessTokenService;
     public static final Logger logger = LoggerFactory.getLogger(AuthResource.class);
 
     @Inject
-    public AuthResource(AccessTokenService accessTokenService) {
-        this.accessTokenService = accessTokenService;
+    public AuthResource() {
+        GuiceInjector.getInjector().injectMembers(this);
     }
 
     @POST

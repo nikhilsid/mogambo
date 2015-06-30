@@ -24,15 +24,16 @@ public class RelationshipDAO extends BasicDAO<Relationship,ObjectId> {
     }
 
 
-    public void follow(ObjectId followerId, ObjectId followingId,int tagOrUser) {
-        Query<Relationship> query=this.getDatastore().createQuery(Relationship.class).field("followerId").equal(followerId).field("followingId").equal(followingId);
+    // followingId could be either tag or username
+    public void follow(String followerUsername, String followingId,int tagOrUser) {
+        Query<Relationship> query=this.getDatastore().createQuery(Relationship.class).field("followerUsername").equal(followerUsername).field("followingId").equal(followingId);
         if(this.findOne(query)==null) {
-            this.save(new Relationship(followerId, followingId, tagOrUser, DateTime.now().getMillis()));
+            this.save(new Relationship(followerUsername, followingId, tagOrUser, DateTime.now().getMillis()));
         }
     }
 
-    public void unfollow(ObjectId followerId, ObjectId unfollowerId) {
-        Query<Relationship> query=this.getDatastore().createQuery(Relationship.class).field("followerId").equal(followerId).field("followingId").equal(unfollowerId);
+    public void unfollow(String followerUsername, String unfollowerId) {
+        Query<Relationship> query=this.getDatastore().createQuery(Relationship.class).field("followerUsername").equal(followerUsername).field("followingId").equal(unfollowerId);
         Relationship relationship = this.findOne(query);
         if(relationship!=null) {
             this.delete(relationship);

@@ -2,10 +2,8 @@ package com.nilmish.mogambo.dao;
 
 import com.google.inject.Inject;
 import com.nilmish.mogambo.entities.Following;
-import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;
-import org.mongodb.morphia.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
@@ -14,40 +12,36 @@ import java.util.List;
 /**
  * Created by nilesh.m on 19/06/15.
  */
-public class FollowingDAO extends BasicDAO<Following,ObjectId> {
+public class FollowingDAO extends BasicDAO<Following,String> {
     public static final Logger logger = LoggerFactory.getLogger(FollowingDAO.class);
     @Inject
     public FollowingDAO(Datastore ds) {
         super(ds);
     }
 
-    public Following getFollowingObject(String username) {
-        Query<Following> query=this.getDatastore().createQuery(Following.class).field("username").equal(username);
-        return this.findOne(query);
-    }
 
-    public void addUserFollower(String username, ObjectId followingId) {
-        Following following=getFollowingObject(username);
+    public void addUserFollower(String username, String followingUsername) {
+        Following following=this.get(username);
         if(following==null){
-            List<ObjectId> followingIdList=new ArrayList<ObjectId>();
-            followingIdList.add(followingId);
-            List<ObjectId> followingTagList=null;
-            following=new Following(username,followingIdList,followingTagList);
+            List<String> followingUsernameList=new ArrayList<String>();
+            followingUsernameList.add(followingUsername);
+            List<String> followingTagnameList=null;
+            following=new Following(username,followingUsernameList,followingTagnameList);
         }
         else{
-            if(following.getFollowingUserIdList()==null) {
-                following.setFollowingUserIdList(new ArrayList<ObjectId>());
+            if(following.getFollowingUsernameList()==null) {
+                following.setFollowingUsernameList(new ArrayList<String>());
             }
-            following.getFollowingUserIdList().add(followingId);
+            following.getFollowingUsernameList().add(followingUsername);
         }
         this.save(following);
     }
 
-    public void removeUserFollower(String username, ObjectId unfollowingId) {
-        Following following=getFollowingObject(username);
-        if(following.getFollowingUserIdList()!=null) {
+    public void removeUserFollower(String username, String unfollowingId) {
+        Following following=this.get(username);
+        if(following.getFollowingUsernameList()!=null) {
             logger.info("user with objectId: "+unfollowingId+" is removed from user: "+username+" following list");
-            following.getFollowingUserIdList().remove(unfollowingId);
+            following.getFollowingUsernameList().remove(unfollowingId);
             this.save(following);
         }
         else{
@@ -55,28 +49,28 @@ public class FollowingDAO extends BasicDAO<Following,ObjectId> {
         }
     }
 
-    public void addTagFollower(String username, ObjectId followingTagId) {
-        Following following=getFollowingObject(username);
+    public void addTagFollower(String username, String followingTagId) {
+        Following following=this.get(username);
         if(following==null){
-            List<ObjectId> followingIdList=null;
-            List<ObjectId> followingTagList=new ArrayList<ObjectId>();
+            List<String> followingIdList=null;
+            List<String> followingTagList= new ArrayList<String>();
             followingTagList.add(followingTagId);
             following=new Following(username,followingIdList,followingTagList);
         }
         else{
-            if(following.getFollowingTagIdList()==null) {
-                following.setFollowingTagIdList(new ArrayList<ObjectId>());
+            if(following.getFollowingTagnameList()==null) {
+                following.setFollowingTagnameList(new ArrayList<String>());
             }
-            following.getFollowingTagIdList().add(followingTagId);
+            following.getFollowingTagnameList().add(followingTagId);
         }
         this.save(following);
     }
 
-    public void removeTagFollower(String username, ObjectId unfollowingTagId) {
-        Following following=getFollowingObject(username);
-        if(following.getFollowingTagIdList()!=null) {
+    public void removeTagFollower(String username, String unfollowingTagId) {
+        Following following=this.get(username);
+        if(following.getFollowingTagnameList()!=null) {
             logger.info("user with objectId: "+unfollowingTagId+" is removed from user: "+username+" following list");
-            following.getFollowingTagIdList().remove(unfollowingTagId);
+            following.getFollowingTagnameList().remove(unfollowingTagId);
             this.save(following);
         }
         else{

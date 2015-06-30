@@ -9,7 +9,7 @@ import org.mongodb.morphia.dao.BasicDAO;
 /**
  * Created by nilesh.m on 19/06/15.
  */
-public class InverseTagPostMapperDAO extends BasicDAO<InverseTagPostMapper,ObjectId> {
+public class InverseTagPostMapperDAO extends BasicDAO<InverseTagPostMapper,String> {
     @Inject
     public InverseTagPostMapperDAO(Datastore ds) {
         super(ds);

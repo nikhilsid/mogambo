@@ -16,4 +16,7 @@ public class TagDisagree {
         this.tagId = tagId;
         this.count = count;
     }
+
+
 }
+

@@ -27,41 +27,41 @@ public class UserPostDAO extends BasicDAO<UserPost,ObjectId> {
         super(ds);
     }
 
-    public HashSet<ObjectId> findUserFeed(List<ObjectId> userFollowingIds) {
-        HashSet<ObjectId> hashSet=new HashSet<ObjectId>();
-        if(userFollowingIds.size()==0){
-            return hashSet;
-        }
-        Query<UserPost> query = this.getDatastore().createQuery(UserPost.class).field("username").in(userFollowingIds);
-        List<UserPost> userPostList=this.find(query).asList();
-        for(UserPost userPost:userPostList){
-            hashSet.add(userPost.getPostId());
-        }
-        return hashSet;
-
-//        Query<UserPost> tagQuery = this.getDatastore().createQuery(UserPost.class);
-//        tagQuery.filter("tagList elem", BasicDBObjectBuilder.start().add("$in",tagFollowingIds).get());
+//    public HashSet<String> findUserFeed(List<String> userFollowingIds) {
+//        HashSet<String> hashSet=new HashSet<String>();
+//        if(userFollowingIds.size()==0){
+//            return hashSet;
+//        }
+//        Query<UserPost> query = this.getDatastore().createQuery(UserPost.class).field("username").in(userFollowingIds);
+//        List<UserPost> userPostList=this.find(query).asList();
+//        for(UserPost userPost:userPostList){
+//            hashSet.add(userPost.getPostId());
+//        }
+//        return hashSet;
 //
-//        List<UserPost> userPostList1=this.find(userQuery).asList();
-//        List<UserPost> userPostList2=this.find(tagQuery).asList();
+////        Query<UserPost> tagQuery = this.getDatastore().createQuery(UserPost.class);
+////        tagQuery.filter("tagList elem", BasicDBObjectBuilder.start().add("$in",tagFollowingIds).get());
+////
+////        List<UserPost> userPostList1=this.find(userQuery).asList();
+////        List<UserPost> userPostList2=this.find(tagQuery).asList();
+////
+////        List<UserPost> userPostList=new ArrayList<UserPost>();
+////        HashSet<ObjectId> hashSet=new HashSet<ObjectId>();
+////        getUniquePost(userPostList1, userPostList, hashSet);
+////        getUniquePost(userPostList2, userPostList, hashSet);
 //
-//        List<UserPost> userPostList=new ArrayList<UserPost>();
-//        HashSet<ObjectId> hashSet=new HashSet<ObjectId>();
-//        getUniquePost(userPostList1, userPostList, hashSet);
-//        getUniquePost(userPostList2, userPostList, hashSet);
+//    }
+//
+////    private void getUniquePost(List<UserPost> userPostList1, List<UserPost> userPostList, HashSet<ObjectId> hashSet) {
+////        for(UserPost userPost:userPostList1){
+////            if(!hashSet.contains(userPost.getPostId())){
+////                hashSet.add(userPost.getPostId());
+////                userPostList.add(userPost);
+////            }
+////        }
+////    }
 
-    }
-
-    private void getUniquePost(List<UserPost> userPostList1, List<UserPost> userPostList, HashSet<ObjectId> hashSet) {
-        for(UserPost userPost:userPostList1){
-            if(!hashSet.contains(userPost.getPostId())){
-                hashSet.add(userPost.getPostId());
-                userPostList.add(userPost);
-            }
-        }
-    }
-
-    public List<UserPost> getPostFromIds(HashSet<ObjectId> userFeedList) {
+    public List<UserPost> getPostFromIds(HashSet<String> userFeedList) {
         List<UserPost> userPostList=new ArrayList<UserPost>();
         if(userFeedList.size()!=0) {
             Query<UserPost> query = this.getDatastore().createQuery(UserPost.class).field("postId").in(userFeedList);
@@ -73,6 +73,12 @@ public class UserPostDAO extends BasicDAO<UserPost,ObjectId> {
     public void upvotePost(ObjectId objectId) {
         UserPost userPost=this.get(objectId);
         userPost.setAggregatedVoteCount(userPost.getAggregatedVoteCount()+1);
+        this.save(userPost);
+    }
+
+    public void unUpvotePost(ObjectId objectId) {
+        UserPost userPost=this.get(objectId);
+        userPost.setAggregatedVoteCount(userPost.getAggregatedVoteCount()-1);
         this.save(userPost);
     }
 }

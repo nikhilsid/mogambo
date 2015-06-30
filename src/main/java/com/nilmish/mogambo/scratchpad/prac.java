@@ -1,17 +1,20 @@
 package com.nilmish.mogambo.scratchpad;
 
-import org.bson.types.ObjectId;
-
 /**
  * Created by nilesh.m on 20/06/15.
  */
 public class prac {
+    public static String sanitiseUsername(String username){
+        username=username.toLowerCase().trim();
+        if(username.endsWith("@flipkart.com")){
+            int id=username.indexOf('@');
+            username=username.substring(0,id);
+        }
+        return username;
+    }
+
     public static void main(String[] args) {
-        ObjectId id=new ObjectId();
-        String str=id.toHexString();
-        String str1=id.toString();
-        System.out.println(id);
+        String str=sanitiseUsername("  NileSh.m@flipkart.com  ");
         System.out.println(str);
-        System.out.println(str1);
     }
 }

@@ -12,13 +12,13 @@ import org.mongodb.morphia.annotations.Id;
 public class Relationship {
     @Id
     private ObjectId id;
-    private ObjectId followerId;
-    private ObjectId followingId;
+    private String followerUsername;
+    private String followingId;
     private Integer tagOrUser; // 0 for tag, 1 for user
     private Long timestamp;
 
-    public Relationship(ObjectId followerId, ObjectId followingId, Integer tagOrUser, Long timestamp) {
-        this.followerId = followerId;
+    public Relationship(String followerUsername, String followingId, Integer tagOrUser, Long timestamp) {
+        this.followerUsername = followerUsername;
         this.followingId = followingId;
         this.tagOrUser = tagOrUser;
         this.timestamp = timestamp;
@@ -28,13 +28,6 @@ public class Relationship {
     }
 
 
-    public ObjectId getFollowerId() {
-        return followerId;
-    }
-
-    public ObjectId getFollowingId() {
-        return followingId;
-    }
 
     public Integer getTagOrUser() {
         return tagOrUser;
@@ -42,6 +35,18 @@ public class Relationship {
 
     public Long getTimestamp() {
         return timestamp;
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public String getFollowerUsername() {
+        return followerUsername;
+    }
+
+    public String getFollowingId() {
+        return followingId;
     }
 }
 

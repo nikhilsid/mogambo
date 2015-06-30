@@ -5,6 +5,7 @@ import com.google.inject.Singleton;
 import com.nilmish.mogambo.dao.*;
 import com.nilmish.mogambo.entities.Following;
 import com.nilmish.mogambo.entities.UserPost;
+import com.nilmish.mogambo.utils.GuiceInjector;
 import org.bson.types.ObjectId;
 
 import java.util.HashSet;
@@ -16,39 +17,36 @@ import java.util.List;
 
 @Singleton
 public class FeedGenerator {
-    private UserPostDAO userPostDAO;
-    private RelationshipDAO relationshipDAO;
-    private FollowingDAO followingDAO;
-    private InverseTagPostMapperDAO inverseTagPostMapperDAO;
+    @Inject private UserPostDAO userPostDAO;
+    @Inject private RelationshipDAO relationshipDAO;
+    @Inject private FollowingDAO followingDAO;
+    @Inject private InverseTagPostMapperDAO inverseTagPostMapperDAO;
 
     @Inject
-    public FeedGenerator(UserPostDAO userPostDAO, RelationshipDAO relationshipDAO, FollowingDAO followingDAO, InverseTagPostMapperDAO inverseTagPostMapperDAO) {
-        this.userPostDAO = userPostDAO;
-        this.relationshipDAO = relationshipDAO;
-        this.followingDAO = followingDAO;
-        this.inverseTagPostMapperDAO = inverseTagPostMapperDAO;
+    public FeedGenerator() {
+        GuiceInjector.getInjector().injectMembers(this);
     }
-
-    public  List<UserPost> generateFeed(String username){
-        Following following=followingDAO.getFollowingObject(username);
-        List<ObjectId> followingUserIdList=following.getFollowingUserIdList();
-        List<ObjectId> followingTagIdList=following.getFollowingTagIdList();
-
-        // from following people
-        HashSet<ObjectId> userFeedIdSet=userPostDAO.findUserFeed(followingUserIdList);
-
-        // from following tag
-        for(ObjectId tagId:followingTagIdList){
-            List<ObjectId> postIdList=inverseTagPostMapperDAO.get(tagId).getPostIdList();
-            add(userFeedIdSet,postIdList);
-        }
-
-        return userPostDAO.getPostFromIds(userFeedIdSet);
-    }
-
-    private void add(HashSet<ObjectId> userFeedList, List<ObjectId> postIdList) {
-        for(ObjectId id:postIdList){
-            userFeedList.add(id);
-        }
-    }
+//
+//    public  List<UserPost> generateFeed(String username){
+//        Following following=followingDAO.getFollowingObject(username);
+//        List<String> followingUserIdList=following.getFollowingUsernameList();
+//        List<String> followingTagIdList=following.getFollowingTagnameList();
+//
+//        // from following people
+//        HashSet<String> userFeedIdSet=userPostDAO.findUserFeed(followingUserIdList);
+//
+//        // from following tag
+//        for(String tagId:followingTagIdList){
+//            List<String> postIdList=inverseTagPostMapperDAO.get(tagId).getPostIdList();
+//            add(userFeedIdSet,postIdList);
+//        }
+//
+//        return userPostDAO.getPostFromIds(userFeedIdSet);
+//    }
+//
+//    private void add(HashSet<String> userFeedList, List<String> postIdList) {
+//        for(String id:postIdList){
+//            userFeedList.add(id);
+//        }
+//    }
 }

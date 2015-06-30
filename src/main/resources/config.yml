@@ -35,3 +35,6 @@ logging:
         threshold: ALL
         timeZone: UTC
         target: stdout
+
+swagger:
+  resourcePackage: com.nilmish.mogambo.resources
