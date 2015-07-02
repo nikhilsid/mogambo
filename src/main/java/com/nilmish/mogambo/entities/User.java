@@ -2,6 +2,7 @@ package com.nilmish.mogambo.entities;
 
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Indexed;
 
 /**
  * Created by nilesh.m on 14/06/15.
@@ -12,7 +13,11 @@ public class User {
     @Id
     private String username;
     private String name;
+
+    @Indexed(name="emailId", unique = true)
     private String emailId;
+
+    private String hashPassword;
     private String userPhotoPath;
     private Double userScore;
     private Integer followersCount;
@@ -20,21 +25,32 @@ public class User {
     private Integer tagFollowCount;
     private Integer postCount;
     private boolean userVerified;
+    private boolean blocked;
 
-    public User(String username, String name, String emailId, String userPhotoPath, Double userScore, Integer followersCount, Integer followingCount, Integer tagFollowCount, Integer postCount, boolean UserVerified) {
+    public User(String username, String name, String emailId, String hashPassword) {
         this.username = username;
         this.name = name;
         this.emailId = emailId;
-        this.userPhotoPath = userPhotoPath;
-        this.userScore = userScore;
-        this.followersCount = followersCount;
-        this.followingCount = followingCount;
-        this.tagFollowCount = tagFollowCount;
-        this.postCount = postCount;
-        this.userVerified = UserVerified;
+        this.hashPassword = hashPassword;
     }
 
     public User() {
+    }
+
+    public String getHashPassword() {
+        return hashPassword;
+    }
+
+    public void setHashPassword(String hashPassword) {
+        this.hashPassword = hashPassword;
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
     }
 
     public String getUsername() {

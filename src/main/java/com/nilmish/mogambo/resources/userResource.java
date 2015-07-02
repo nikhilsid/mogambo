@@ -3,22 +3,23 @@ package com.nilmish.mogambo.resources;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.nilmish.mogambo.auth.UserSession;
-import com.nilmish.mogambo.dao.*;
+import com.nilmish.mogambo.dao.FollowingDAO;
+import com.nilmish.mogambo.dao.RelationshipDAO;
+import com.nilmish.mogambo.dao.UserDAO;
 import com.nilmish.mogambo.entities.Following;
-import com.nilmish.mogambo.entities.Tag;
 import com.nilmish.mogambo.entities.User;
-import com.nilmish.mogambo.feed.FeedGenerator;
 import com.nilmish.mogambo.utils.GuiceInjector;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import io.dropwizard.auth.Auth;
-import org.mongodb.morphia.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,41 +32,43 @@ import java.util.List;
 public class UserResource {
     public static final Logger logger = LoggerFactory.getLogger(UserResource.class);
     @Inject private UserDAO userDAO;
-    @Inject private UserPostDAO userPostDAO;
     @Inject private RelationshipDAO relationshipDAO;
     @Inject private FollowingDAO followingDAO;
-    @Inject private TagDAO tagDAO;
-    @Inject private FeedGenerator feedGenerator;
 
     @Inject
     public UserResource() {
         GuiceInjector.getInjector().injectMembers(this);
     }
 
-
-    // TODO : throw an exception if cannot save the user in DB like in socialcs code
-    @Path("/saveUser")
-    @ApiOperation(value = "Saves the New User", notes = "This API needs to be used on SignUp", response = Boolean.class)
-    @POST
-    public Boolean saveUser(User user){
-        sanitiseUser(user);
-        Key<User> key=userDAO.save(user);
-        if(key==null || key.getId()==null){
-            logger.info("could not save the user: "+user.toString());
+    @Path("/findUsername")
+    @ApiOperation(value = "Finds out if the username is already taken or not", notes = "This API checks whether" +
+            "a username is already taken or not. Returns true is username is unique. " +
+            "We need to use this using signup", response = Boolean.class)
+    @GET
+    public Boolean isUsernameUnique(@QueryParam("username") String username){
+        if(userDAO.get(username)!=null){
             return false;
         }
-        else {
-            logger.info("user successfully saved in db: "+user.toString());
-            return true;
-        }
+        return true;
     }
+
+
+    @Path("/findEmailId")
+    @ApiOperation(value = "Finds out if the emailId is already taken or not", notes = "This API checks whether" +
+            "a emailId is already taken or not. Returns true if emailId is unique." +
+            " We need to use this using signup", response = Boolean.class)
+    @GET
+    public Boolean isEmailIdUnique(@QueryParam("emailId") String emailId){
+        return userDAO.findIfEmailTakenOrNot(emailId);
+    }
+
 
     @Path("/getUser")
     @ApiOperation(value = "Get the User with given *username*", notes = "This API need to be used " +
             "when we need User object corresponding to *username*", response = User.class)
     @GET
     public User getUser(@Auth UserSession userSession, @QueryParam("username") String username){
-        return userDAO.findUser(username);
+        return userDAO.get(username);
     }
 
     @Path("/getAllUser")
@@ -124,14 +127,5 @@ public class UserResource {
     }
 
 
-    private void sanitiseUser(User user) {
-        user.setEmailId(removeSpacesAndLowerCase(user.getEmailId()));
-        user.setName(removeSpacesAndLowerCase(user.getName()));
-        user.setUsername(removeSpacesAndLowerCase(user.getUsername()));
-        user.setUserPhotoPath(removeSpacesAndLowerCase(user.getUserPhotoPath()));
-    }
 
-    private String removeSpacesAndLowerCase(String str) {
-        return str.trim().toLowerCase();
-    }
 }

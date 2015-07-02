@@ -15,7 +15,7 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import com.nilmish.mogambo.responseModel.TagResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -57,13 +57,14 @@ public class TagResource {
 
     @Path("/getAllTags")
     @ApiOperation(value = "Gets all the tags from DB", notes = "This API gets the list of all tags from DB",
-            response = Boolean.class)
+            response = TagResponse.class, responseContainer = "List")
     @GET
-    public List<Tag> getAllTags(@Auth UserSession userSession){
+    public List<TagResponse> getAllTags(@Auth UserSession userSession){
         List<String> tagNameList=tagDAO.findIds();
-        List<Tag> tagList=Lists.newArrayList();
-        for(String tag:tagNameList){
-            tagList.add(tagDAO.get(tag));
+        List<TagResponse> tagList=Lists.newArrayList();
+        for(String tagName:tagNameList){
+            Tag tag=tagDAO.get(tagName);
+            tagList.add(new TagResponse(tag.getTagName(),tag.getTagMeaning()));
         }
         return tagList;
     }

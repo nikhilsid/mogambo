@@ -31,25 +31,17 @@ public class UserDAO extends BasicDAO<User,String> {
         return userList;
     }
 
-    public User findUser(String username) {
-        Query<User> query=this.getDatastore().createQuery(User.class).field("username").equal(username);
-        User user=this.findOne(query);
-        System.out.println(user);
-        return user;
-    }
-
-    public List<User> getUserObjectFromUserIdList(List<String> followingUserIdList) {
-        List<User> usernameList=new ArrayList<User>();
-        if(followingUserIdList==null || followingUserIdList.size()==0){
-            return usernameList;
-        }
-        Query<User> query=this.getDatastore().createQuery(User.class).field("id").in(followingUserIdList);
-        List<User> userList=this.find(query).asList();
-        return userList;
-    }
-
     public User getUserObjectFromUserId(String username) {
         Query<User> query=this.getDatastore().createQuery(User.class).field("username").equal(username);
         return this.findOne(query);
+    }
+
+    public Boolean findIfEmailTakenOrNot(String emailId) {
+        Query<User> query=this.getDatastore().createQuery(User.class).field("emailId").equal(emailId);
+        User user=this.findOne(query);
+        if(user==null){
+            return true;
+        }
+        return false;
     }
 }
