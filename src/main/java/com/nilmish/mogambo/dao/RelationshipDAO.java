@@ -25,11 +25,13 @@ public class RelationshipDAO extends BasicDAO<Relationship,ObjectId> {
 
 
     // followingId could be either tag or username
-    public void follow(String followerUsername, String followingId,int tagOrUser) {
+    public boolean follow(String followerUsername, String followingId,int tagOrUser) {
         Query<Relationship> query=this.getDatastore().createQuery(Relationship.class).field("followerUsername").equal(followerUsername).field("followingId").equal(followingId);
         if(this.findOne(query)==null) {
             this.save(new Relationship(followerUsername, followingId, tagOrUser, DateTime.now().getMillis()));
+            return true;
         }
+        return false;
     }
 
     public void unfollow(String followerUsername, String unfollowerId) {

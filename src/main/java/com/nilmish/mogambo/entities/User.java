@@ -26,15 +26,33 @@ public class User {
     private Integer postCount;
     private boolean userVerified;
     private boolean blocked;
+    private boolean userEmailVerfied;
 
     public User(String username, String name, String emailId, String hashPassword) {
         this.username = username;
         this.name = name;
         this.emailId = emailId;
         this.hashPassword = hashPassword;
+        this.userPhotoPath="";
+        this.userScore=new Double(0);
+        this.followersCount=0;
+        this.followingCount=0;
+        this.tagFollowCount=0;
+        this.postCount=0;
+        this.userVerified=false;
+        this.blocked=false;
+        this.userEmailVerfied=false;
     }
 
     public User() {
+    }
+
+    public boolean isUserEmailVerfied() {
+        return userEmailVerfied;
+    }
+
+    public void setUserEmailVerfied(boolean userEmailVerfied) {
+        this.userEmailVerfied = userEmailVerfied;
     }
 
     public String getHashPassword() {

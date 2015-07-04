@@ -8,14 +8,15 @@ import com.nilmish.mogambo.dao.RelationshipDAO;
 import com.nilmish.mogambo.dao.TagDAO;
 import com.nilmish.mogambo.entities.Following;
 import com.nilmish.mogambo.entities.Tag;
+import com.nilmish.mogambo.responseModel.TagResponse;
 import com.nilmish.mogambo.utils.GuiceInjector;
+import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import io.dropwizard.auth.Auth;
-import org.bson.types.ObjectId;
 import org.mongodb.morphia.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.nilmish.mogambo.responseModel.TagResponse;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.List;
  */
 
 @Path("/tag")
+@Api("/tag")
 @Produces(MediaType.APPLICATION_JSON)
 public class TagResource {
     public static final Logger logger = LoggerFactory.getLogger(TagResource.class);
@@ -42,7 +44,9 @@ public class TagResource {
     @ApiOperation(value = "Saves the New Tag", notes = "This API needs to be used to save the new Tag",
             response = Boolean.class)
     @POST
-    public Boolean saveTag(@Auth UserSession userSession, Tag tag){
+    public Boolean saveTag(@Auth UserSession userSession, @QueryParam("tagName") String tagName,
+                           @QueryParam("typeId") Integer typeId, @QueryParam("tagMeaning") String tagMeaning){
+        Tag tag=new Tag(tagName,typeId,tagMeaning);
         Key<Tag> key=tagDAO.save(tag);
         if(key==null || key.getId()==null){
             logger.info("Could not save tag with details: "+tag.toString());
@@ -64,7 +68,7 @@ public class TagResource {
         List<TagResponse> tagList=Lists.newArrayList();
         for(String tagName:tagNameList){
             Tag tag=tagDAO.get(tagName);
-            tagList.add(new TagResponse(tag.getTagName(),tag.getTagMeaning()));
+            tagList.add(new TagResponse(tag.getTagName(),tag.getTagMeaning(),tag.getTypeId()));
         }
         return tagList;
     }
@@ -84,27 +88,40 @@ public class TagResource {
     }
 
 
-
     @Path("/getFollowingTags")
+    @ApiOperation(value = "Use to get all the tags followed by user", notes = "This API is used to get all the" +
+            "tags followed by this user", response = TagResponse.class, responseContainer = "List")
     @GET
-    public List<Tag> getFollowingTags(@Auth UserSession userSession){
-        String username=userSession.getUsername();
-        List<String> tagIdList= followingDAO.get(username).getFollowingTagnameList();
-        return tagDAO.getTagsFromIds(tagIdList);
+    public List<TagResponse> getTagsFollowed(@Auth UserSession userSession){
+        Following following=followingDAO.get(userSession.getUsername());
+        List<Tag> tags=tagDAO.getTagsFromIds(following.getFollowingTagnameList());
+        List<TagResponse> tagResponses=Lists.newArrayList();
+        for(Tag tag:tags){
+            tagResponses.add(new TagResponse(tag.getTagName(),tag.getTagMeaning(),tag.getTypeId()));
+        }
+        return tagResponses;
     }
 
 
     @Path("/followTag")
-    @GET   // username follows followTag
+    @ApiOperation(value = "Use to follow a given tag", notes = "This API is used when current user" +
+            "wants to follow tag *followingTag*. Returns true iff ", response = Boolean.class)
+    @GET
     public Boolean followTag(@Auth UserSession userSession,@QueryParam("followingTag") String followingTag){
         String username=userSession.getUsername();
-        relationshipDAO.follow(username, followingTag, 0);
-        followingDAO.addTagFollower(username, followingTag);
-        return tagDAO.incrementCount(followingTag);
+        boolean followed=relationshipDAO.follow(username, followingTag, 0);
+        if(followed) {
+            followingDAO.addTagFollower(username, followingTag);
+            tagDAO.incrementCount(followingTag);
+            return true;
+        }
+        return false; // tag was already followed
     }
 
     @Path("/unfollowTag")
-    @GET  // username unfollows unfollowTag
+    @ApiOperation(value = "Use to unfollow a given tag", notes = "This API is used when current user" +
+            "wants to follow tag *unfollowingTag*. Returns true iff ", response = Boolean.class)
+    @GET
     public Boolean unfollowTag(@Auth UserSession userSession,@QueryParam("unfollowingTag") String unfollowingTag){
         String username=userSession.getUsername();
         relationshipDAO.unfollow(username, unfollowingTag);
@@ -112,10 +129,5 @@ public class TagResource {
         return tagDAO.decrementCount(unfollowingTag);
     }
 
-    @Path("/getTagsFollowed")
-    @GET
-    public List<Tag> getTagsFollowed(@Auth UserSession userSession){
-        Following following=followingDAO.get(userSession.getUsername());
-        return tagDAO.getTagsFromIds(following.getFollowingTagnameList());
-    }
+
 }

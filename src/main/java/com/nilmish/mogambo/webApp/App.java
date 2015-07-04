@@ -3,13 +3,10 @@ package com.nilmish.mogambo.webApp;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.nilmish.mogambo.auth.*;
-import com.nilmish.mogambo.resources.FeedResource;
-import com.nilmish.mogambo.resources.ReportingResource;
-import com.nilmish.mogambo.scratchpad.userResource;
+import com.nilmish.mogambo.bootstrap.MogamboModule;
+import com.nilmish.mogambo.bootstrap.RedisModule;
+import com.nilmish.mogambo.resources.*;
 import com.nilmish.mogambo.utils.GuiceInjector;
-import com.nilmish.mogambo.configuration.MogamboConfiguration;
-import com.nilmish.mogambo.resources.TagResource;
-import com.nilmish.mogambo.resources.UserResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -45,13 +42,16 @@ public class App extends Application<MogamboConfiguration>{
     @Override
     public void run(MogamboConfiguration mogamboConfiguration, Environment environment) throws Exception {
         MogamboModule mogamboModule=new MogamboModule(mogamboConfiguration);
-        injector= Guice.createInjector(mogamboModule);
+        RedisModule redisModule=new RedisModule();
+        injector= Guice.createInjector(mogamboModule, redisModule);
         GuiceInjector.assignInjector(injector);
         registerResources(environment);
     }
 
     private void registerResources(Environment environment){
+        environment.jersey().register(injector.getInstance(ApiExceptionMapper.class));
         environment.jersey().register(injector.getInstance(UserResource.class));
+        environment.jersey().register(injector.getInstance(UserPostResource.class));
         environment.jersey().register(injector.getInstance(AuthResource.class));
         environment.jersey().register(injector.getInstance(TagResource.class));
         environment.jersey().register(injector.getInstance(ReportingResource.class));

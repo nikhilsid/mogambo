@@ -17,13 +17,13 @@ public class Tag {
     private Integer followedCount;
     private boolean approved;
 
-    public Tag(String tagName, Integer typeId, String tagMeaning, Integer requestCount, Integer followedCount, boolean approved) {
+    public Tag(String tagName, Integer typeId, String tagMeaning) {
         this.tagName = tagName;
         this.typeId = typeId;
         this.tagMeaning = tagMeaning;
-        this.requestCount = requestCount;
-        this.followedCount = followedCount;
-        this.approved = approved;
+        this.requestCount=1;
+        this.followedCount=1;
+        this.approved=false;
     }
 
     public Tag() {

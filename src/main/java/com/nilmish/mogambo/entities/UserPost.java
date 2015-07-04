@@ -13,8 +13,8 @@ import java.util.List;
 public class UserPost {
     @Id
     private ObjectId postId;
-    private ObjectId userId;
-    private ObjectId parentId;
+    private String username;
+    private String parentUsername;
     private String postLocation;
     private Long timestamp;
     private String priceCurrency;
@@ -28,9 +28,9 @@ public class UserPost {
     public UserPost() {
     }
 
-    public UserPost(ObjectId userId, ObjectId parentId, String postLocation, Long timestamp, String priceCurrency, String postPrice, String postImageURL, String locationGeoCode, Integer aggregatedVoteCount, List<TagDisagree> tagList) {
-        this.userId = userId;
-        this.parentId = parentId;
+    public UserPost(String username, String parentUsername, String postLocation, Long timestamp, String priceCurrency, String postPrice, String postImageURL, String locationGeoCode, Integer aggregatedVoteCount, List<TagDisagree> tagList) {
+        this.username = username;
+        this.parentUsername = parentUsername;
         this.postLocation = postLocation;
         this.timestamp = timestamp;
         this.priceCurrency = priceCurrency;
@@ -41,21 +41,14 @@ public class UserPost {
         this.tagList = tagList;
     }
 
-    public ObjectId getPostId() {
-        return postId;
+    public String getPostId() {
+        return postId.toString();
     }
 
     public void setAggregatedVoteCount(Integer aggregatedVoteCount) {
         this.aggregatedVoteCount = aggregatedVoteCount;
     }
 
-    public ObjectId getUserId() {
-        return userId;
-    }
-
-    public ObjectId getParentId() {
-        return parentId;
-    }
 
     public String getPostLocation() {
         return postLocation;

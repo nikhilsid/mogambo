@@ -6,10 +6,12 @@ package com.nilmish.mogambo.responseModel;
 public class TagResponse {
     private String tagName;
     private String tagMeaning;
+    private Integer typeId;
 
-    public TagResponse(String tagName, String tagMeaning) {
+    public TagResponse(String tagName, String tagMeaning, Integer typeId) {
         this.tagName = tagName;
         this.tagMeaning = tagMeaning;
+        this.typeId = typeId;
     }
 
     public String getTagName() {
@@ -26,5 +28,13 @@ public class TagResponse {
 
     public void setTagMeaning(String tagMeaning) {
         this.tagMeaning = tagMeaning;
+    }
+
+    public Integer getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
     }
 }

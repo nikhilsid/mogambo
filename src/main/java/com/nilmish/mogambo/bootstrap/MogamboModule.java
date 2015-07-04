@@ -1,4 +1,4 @@
-package com.nilmish.mogambo.webApp;
+package com.nilmish.mogambo.bootstrap;
 
 import com.google.inject.AbstractModule;
 import com.mongodb.Mongo;
@@ -7,11 +7,9 @@ import com.mongodb.ServerAddress;
 import com.nilmish.mogambo.auth.AccessTokenService;
 import com.nilmish.mogambo.auth.RedisAccessTokenService;
 import com.nilmish.mogambo.configuration.DbConfiguration;
-import com.nilmish.mogambo.configuration.MogamboConfiguration;
+import com.nilmish.mogambo.webApp.MogamboConfiguration;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
 
 import java.net.UnknownHostException;
 

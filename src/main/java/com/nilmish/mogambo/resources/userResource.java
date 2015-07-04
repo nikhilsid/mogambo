@@ -2,6 +2,7 @@ package com.nilmish.mogambo.resources;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.nilmish.mogambo.auth.ApiException;
 import com.nilmish.mogambo.auth.UserSession;
 import com.nilmish.mogambo.dao.FollowingDAO;
 import com.nilmish.mogambo.dao.RelationshipDAO;
@@ -15,11 +16,13 @@ import io.dropwizard.auth.Auth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -84,13 +87,20 @@ public class UserResource {
     @ApiOperation(value = "The authenticated user follows *followingUsername*", notes = "This API is used if authenticated" +
             "user wants to follow user *followingUsername*" , response = Boolean.class)
     @GET
-    public Boolean followUser(@Auth UserSession userSession,@QueryParam("followingUsername") String followingUsername){
+    public Boolean followUser(@Auth UserSession userSession,@NotNull @QueryParam("followingUsername") String followingUsername) throws ApiException {
+        if(followingUsername==null){
+            throw new ApiException(Response.Status.NOT_ACCEPTABLE,"followingUsername should not be NULL");
+        }
         String username=userSession.getUsername();
         if(username.equals(followingUsername)){
             return false;
         }
-        relationshipDAO.follow(username, followingUsername, 1);
-        followingDAO.addUserFollower(username, followingUsername);
+        boolean followed=relationshipDAO.follow(username, followingUsername, 1);
+        if(followed) {
+            followingDAO.addUserFollower(username, followingUsername);
+            return followed;
+            //userDAO.incrementFollowingCount();
+        }
         return true;
     }
 
@@ -125,7 +135,5 @@ public class UserResource {
         }
         return followingUsernameList;
     }
-
-
 
 }

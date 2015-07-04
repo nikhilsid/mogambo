@@ -1,5 +1,6 @@
 package com.nilmish.mogambo.feed;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.nilmish.mogambo.dao.*;
@@ -26,27 +27,32 @@ public class FeedGenerator {
     public FeedGenerator() {
         GuiceInjector.getInjector().injectMembers(this);
     }
-//
-//    public  List<UserPost> generateFeed(String username){
-//        Following following=followingDAO.getFollowingObject(username);
-//        List<String> followingUserIdList=following.getFollowingUsernameList();
-//        List<String> followingTagIdList=following.getFollowingTagnameList();
-//
-//        // from following people
-//        HashSet<String> userFeedIdSet=userPostDAO.findUserFeed(followingUserIdList);
-//
-//        // from following tag
-//        for(String tagId:followingTagIdList){
-//            List<String> postIdList=inverseTagPostMapperDAO.get(tagId).getPostIdList();
-//            add(userFeedIdSet,postIdList);
-//        }
-//
-//        return userPostDAO.getPostFromIds(userFeedIdSet);
-//    }
-//
-//    private void add(HashSet<String> userFeedList, List<String> postIdList) {
-//        for(String id:postIdList){
-//            userFeedList.add(id);
-//        }
-//    }
+
+    public  List<UserPost> generateFeed(String username){
+        Following following=followingDAO.get(username);
+        List<String> followingUserIdList=following.getFollowingUsernameList();
+        List<String> followingTagIdList=following.getFollowingTagnameList();
+
+        // from following people
+        HashSet<String> userFeedIdSet=userPostDAO.findUserFeed(followingUserIdList);
+
+        // from following tag
+        for(String tagId:followingTagIdList){
+            List<String> postIdList=inverseTagPostMapperDAO.get(tagId).getPostIdList();
+            add(userFeedIdSet,postIdList);
+        }
+
+        List<ObjectId> objectIds=Lists.newArrayList();
+        for(String postId:userFeedIdSet){
+            objectIds.add(new ObjectId(postId));
+        }
+
+        return userPostDAO.getPostFromIds(objectIds);
+    }
+
+    private void add(HashSet<String> userFeedList, List<String> postIdList) {
+        for(String id:postIdList){
+            userFeedList.add(id);
+        }
+    }
 }

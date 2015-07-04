@@ -1,6 +1,7 @@
-package com.nilmish.mogambo.configuration;
+package com.nilmish.mogambo.webApp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nilmish.mogambo.configuration.DbConfiguration;
 import io.dropwizard.Configuration;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 

@@ -3,7 +3,10 @@ package com.nilmish.mogambo.auth;
 import com.google.inject.Inject;
 import com.nilmish.mogambo.dao.UserDAO;
 import com.nilmish.mogambo.entities.User;
+import com.nilmish.mogambo.requestModel.SignupUser;
+import com.nilmish.mogambo.requestModel.UserDetails;
 import com.nilmish.mogambo.utils.GuiceInjector;
+import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import io.dropwizard.auth.Auth;
 import org.mongodb.morphia.Key;
@@ -19,6 +22,7 @@ import javax.ws.rs.core.Response;
  */
 
 @Path("/auth")
+@Api("/auth")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class AuthResource {
@@ -32,33 +36,16 @@ public class AuthResource {
         GuiceInjector.getInjector().injectMembers(this);
     }
 
-    @POST
-    @Path("/login")
-    public AccessTokenCredentials getEvent(UserDetails userDetails) throws ApiException {
-        logger.info("login request from userId: " + userDetails.getUsername());
-        boolean authenticated=true;
-        User user=userDAO.get(userDetails.getUsername());
-        if(user==null || user.getHashPassword()!=userDetails.getPassword()){
-            authenticated=false;
-        }
-        if(authenticated){
-            return getAccessTokenCredentials(userDetails.getUsername());
-        }
-        else{
-            throw new ApiException(Response.Status.UNAUTHORIZED, "username and password did not match");
-        }
-    }
-
 
     @POST
     @ApiOperation(value = "Saves the New User", notes = "This API needs to be used on SignUp", response = AccessTokenCredentials.class)
     @Path("/signup")
-    public AccessTokenCredentials signUpNewUser(@FormParam("username")String username, @FormParam("name") String name,
-                                 @FormParam("emailId") String emailId, @FormParam("password") String password) throws ApiException {
-        username=sanitise(username);
-        name=sanitise(name);
-        emailId=sanitise(emailId);
-        User user=new User(username,name,emailId,password);
+    public AccessTokenCredentials signUpNewUser(SignupUser signupUser) throws ApiException {
+        String username=sanitise(signupUser.getUsername());
+        String name=sanitise(signupUser.getName());
+        String emailId=sanitise(signupUser.getEmailId());
+        String password=signupUser.getPassword();
+        User user =new User(username,name,emailId,password);
         Key<User> key=userDAO.save(user);
         if(key==null || key.getId()==null){
             logger.error("user with username: "+username+" name: "+name+" emailId: "+emailId+" could not be saved");
@@ -70,13 +57,37 @@ public class AuthResource {
 
     }
 
-    private String sanitise(String username) {
-        return username.trim().toLowerCase();
-    }
+
 
     @POST
+    @ApiOperation(value = "Used to login", notes = "This API is used to login. We need to pass " +
+            "username and password" , response = AccessTokenCredentials.class)
+    @Path("/login")
+    public AccessTokenCredentials getEvent(UserDetails userDetails) throws ApiException {
+        String username=userDetails.getUsername();
+        String password=userDetails.getPassword();
+        logger.info("login request from userId: " + username);
+        boolean authenticated=true;
+        User user=userDAO.get(username);
+        if(user==null || !user.getHashPassword().equals(password)){
+            authenticated=false;
+        }
+        if(authenticated){
+            return getAccessTokenCredentials(username);
+        }
+        else{
+            throw new ApiException(Response.Status.UNAUTHORIZED, "username and password did not match");
+        }
+    }
+
+
+
+
+    @POST
+    @ApiOperation(value = "Used to logout", notes = "This API is used to logout the given user." +
+            "", response = Boolean.class)
     @Path("/logout")
-    public boolean logout(@Auth UserSession userSession){
+    public Boolean logout(@Auth UserSession userSession){
         accessTokenService.removeAccessToken(userSession.getAccessToken());
         logger.info("user with userId : "+ userSession.getUsername() + " is logged out");
         return true;
@@ -87,5 +98,9 @@ public class AuthResource {
         UserSession agent=accessTokenService.createAccessToken(new UserSession(username));
         AccessTokenCredentials accessTokenCredentials=new AccessTokenCredentials(agent.getAccessToken());
         return accessTokenCredentials;
+    }
+
+    private String sanitise(String username) {
+        return username.trim().toLowerCase();
     }
 }
